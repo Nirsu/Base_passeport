@@ -24,14 +24,19 @@ function(req, res) {
 });
 
 app.get('/auth/gitlab', passport.authenticate('gitlab', {scope: ['api']}));
-app.get('/auth/gitlab/callback',
-  passport.authenticate('gitlab', {
-    failureRedirect: '/login'
-  }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/');
-  });
+app.get('/auth/gitlab/callback', passport.authenticate('gitlab', { failureRedirect: '/login' }),
+function(req, res) {
+  // Successful authentication, redirect home.
+  res.redirect('/');
+});
+
+app.get('/auth/slack', passport.authorize('slack'));
+app.get('/auth/slack/callback', passport.authorize('slack', { failureRedirect: '/login' }),
+  function (req, res) {
+    res.redirect('/')
+  }
+);
+
 app.get('/logout', (req, res) => {
     req.session = null;
     req.logout();
